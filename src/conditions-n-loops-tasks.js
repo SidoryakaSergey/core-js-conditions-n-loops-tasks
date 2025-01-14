@@ -498,42 +498,78 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
-  /* const len = str.length;
+function shuffleChar(str, iterations) {
+  const len = str.length;
   if (len <= 1 || iterations <= 0) return str;
 
-  let result = [];
+  const arr = new Array(len);
   for (let i = 0; i < len; i += 1) {
-    result[i] = str[i];
+    arr[i] = str[i];
   }
 
-  function shuffleOnce(input) {
-    const output = new Array(len);
+  const originalState = [...arr];
+  let cycleLength = 0;
+  let isOriginal = false;
+
+  let current = [...arr];
+  let next = new Array(len);
+
+  while (!isOriginal && cycleLength <= len) {
     let evenIndex = 0;
     let oddIndex = Math.floor(len / 2);
 
     for (let i = 0; i < len; i += 1) {
       if (i % 2 === 0) {
-        output[evenIndex] = input[i];
+        next[evenIndex] = current[i];
         evenIndex += 1;
       } else {
-        output[oddIndex] = input[i];
+        next[oddIndex] = current[i];
         oddIndex += 1;
       }
     }
-    return output;
+
+    cycleLength += 1;
+
+    isOriginal = true;
+    for (let i = 0; i < len; i += 1) {
+      if (next[i] !== originalState[i]) {
+        isOriginal = false;
+        break;
+      }
+    }
+
+    const temp = current;
+    current = next;
+    next = temp;
   }
 
-  for (let iter = 0; iter < iterations; iter += 1) {
-    result = shuffleOnce(result);
+  const effectiveIterations = iterations % cycleLength;
+
+  for (let iter = 0; iter < effectiveIterations; iter += 1) {
+    let evenIndex = 0;
+    let oddIndex = Math.floor(len / 2);
+
+    for (let i = 0; i < len; i += 1) {
+      if (i % 2 === 0) {
+        next[evenIndex] = current[i];
+        evenIndex += 1;
+      } else {
+        next[oddIndex] = current[i];
+        oddIndex += 1;
+      }
+    }
+
+    const temp = current;
+    current = next;
+    next = temp;
   }
-  let shuffledString = '';
+
+  let result = '';
   for (let i = 0; i < len; i += 1) {
-    shuffledString += result[i];
+    result += current[i];
   }
 
-  return shuffledString; */
+  return result;
 }
 
 /**
